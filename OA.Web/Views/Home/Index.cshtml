@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section>
+    <div class="container">
+        <div class="col-md-9 mx-auto">
+            <div class="my-card border-red">
+                <div class="light-bg-red p-3">
+                    <h6>Save user information</h6>
+                </div>
+                <div class="p-3">
+                    <form id="userForm" method="post">
+                        <div class="mb-2">
+                            <input type="email" name="email" class="form-control" placeholder="Email address">
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" name="fullName" class="form-control" placeholder="Full name">
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" name="addr" class="form-control" placeholder="Address">
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" name="phone" class="form-control" placeholder="Phone">
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-danger">Save information</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $("#userForm").submit((event) => {
+        const formData = new FormData(event.target);
+        const data = {
+            email: formData.get("email"),
+            fullName: formData.get("fullName"),
+            addr: formData.get("addr"),
+            phone: formData.get("phone")
+        }
+        console.log(data)
+
+        //send post req to api
+        $.ajax({
+            url: "https://localhost:44375/api/saveUser",
+            type: "POST",
+            headers: {
+                contentType: "application/json"
+            },
+            data,
+            success: () => {
+                window.location.href = "/user";
+            },
+            error: (err) => {
+                alert("Failed to save note!\nError - " + err.responseText);
+                console.log(err);
+            }
+        });
+
+        return false;
+    })
+</script>

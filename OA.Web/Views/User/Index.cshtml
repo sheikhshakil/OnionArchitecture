@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "User list";
+}
+
+<section>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="my-card border-green">
+                <div class="light-bg-green p-3">
+                    <h6>User information</h6>
+                </div>
+                <div class="p-2">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped my-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Full name</th>
+                                    <th>Address</th>
+                                    <th>Phone</th>
+                                    <th>Creation date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="my-card border-red">
+                <div class="light-bg-red p-3">
+                    <h6>Search user</h6>
+                </div>
+                <div class="p-2">
+                    <form id="searchForm" method="post">
+                        <div class="mb-2">
+                            <input type="email" id="searchEmail" name="email" class="form-control" placeholder="Email address">
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-sm btn-danger">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    window.onload = getUsers();
+
+    function getUsers() {
+        $.ajax({
+            url: "https://localhost:44375/api/getUser",
+            type: "GET",
+            headers: {
+                contentType: "application/json",
+            },
+            success: (data) => {
+                showData(data);
+                console.log(data);
+            },
+            error: () => {
+                alert("Read error!");
+            }
+        })
+    }
+
+    //search
+    $("#searchForm").submit(() => {
+        const email = $("#searchEmail").val();
+        $.ajax({
+            url: `https://localhost:44375/api/getUser?email=${email}`,
+            type: "GET",
+            headers: {
+                contentType: "application/json",
+            },
+            success: (data) => {
+                showData(data);
+                console.log(data);
+            },
+            error: () => {
+                alert("Read error!");
+            }
+        })
+        return false;
+    })
+
+    function showData(data) {
+        $("#dataBody").empty();
+        data = JSON.parse(data);
+        for (var i = 0; i < data.length; i++) {
+            let template = `<tr>
+                            <td>${data[i].Email}</td>
+                            <td>${data[i].FullName}</td>
+                            <td>${data[i].Address}</td>
+                            <td>${data[i].Phone}</td>
+                            <td>${data[i].CreationDate}</td>
+                            <td>
+                                <form action="/delete" method="get">
+                                    <input class="d-none" type="text" name="email" value="${data[i].Email}" />
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>`;
+            $("#dataBody").append(template);
+        }
+    }
+</script>

@@ -2,22 +2,16 @@
 using OA.Data;
 using OA.Service;
 using System;
+using System.Net.Http;
 
 namespace OA.Api.Controllers
 {
     public class SaveUserController : Controller
     {
         [HttpPost("/api/saveUser")]
-        public IActionResult Index()
+        public IActionResult Index([FromBody] User user)
         {
-            User user = new User
-            {
-                Email = Request.Form["email"],
-                CreationDate = DateTime.Now,
-                FullName = Request.Form["fullName"],
-                Address = Request.Form["addr"],
-                Phone = Request.Form["phone"]
-            };
+            user.CreationDate = DateTime.Now;
 
             bool isSaved = new UserService().SaveUser(user);
 

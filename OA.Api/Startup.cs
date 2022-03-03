@@ -31,11 +31,10 @@ namespace OA.Api
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowMyOrigin",
-                builder => builder.WithOrigins(
-                    "https://localhost:44311")
-                    .WithMethods("POST", "GET", "PUT", "DELETE")
-                    .WithHeaders("*")
-                    );
+                builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             });
 
             services.AddSwaggerGen(c =>
@@ -56,10 +55,10 @@ namespace OA.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OA.Api v1"));
             }
 
-            app.UseCors("AllowMyOrigin");
             app.UseHttpsRedirection();
-
             app.UseRouting();
+
+            app.UseCors("AllowMyOrigin");
 
             app.UseAuthorization();
 
